@@ -14,7 +14,7 @@ MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024
 cloudinary.config(
     cloud_name="dbdws8xmv",
     api_key="632351763265899",
-    api_secret=os.getenv("CLOUDINARY_API_SECRET", "80NIe_oNkdufUxc1mcuPufp54T4"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET", "insert the key here"),
     secure=True
 )
 
