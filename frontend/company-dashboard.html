@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Company Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+    <style>
+        /* CSS Styles */
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --text-color: #fff;
+            --shadow-color: rgba(0, 0, 0, 0.2);
+            --font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background: linear-gradient(to right, #4a90e2, #63b8ff);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+        }
+
+        .card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 6px var(--shadow-color);
+            backdrop-filter: blur(10px);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 16px;
+            border: none;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--text-color);
+            font-family: var(--font-family);
+            resize: vertical;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-family: var(--font-family);
+            transition: background-color 0.3s ease;
+            color: var(--text-color);
+        }
+
+        .btn--primary {
+            background-color: var(--primary-color);
+        }
+
+        .btn--secondary {
+            background-color: var(--secondary-color);
+        }
+
+        .btn--primary:hover {
+            background-color: darken(var(--primary-color), 10%);
+        }
+
+        .btn--secondary:hover {
+            background-color: darken(var(--secondary-color), 10%);
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        li:last-child {
+            border-bottom: none;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="container" style="padding:32px 0">
+        <div class="grid grid-3">
+            <section class="card glass">
+                <h3>Company Profile</h3>
+                <form id="companyForm">
+                    <input placeholder="Name" id="c_name" required />
+                    <input placeholder="Website" id="c_website" />
+                    <input placeholder="Industry" id="c_industry" />
+                    <input placeholder="Location" id="c_location" />
+                    <textarea placeholder="Description" id="c_description"></textarea>
+                    <button class="btn btn--primary" type="submit">Save</button>
+                </form>
+            </section>
+            <section class="card glass">
+                <h3>Post Internship</h3>
+                <form id="internshipForm">
+                    <input placeholder="Title" id="i_title" required />
+                    <textarea placeholder="Description" id="i_description" required></textarea>
+                    <input placeholder="Requirements" id="i_requirements" />
+                    <input placeholder="Stipend" id="i_stipend" />
+                    <input placeholder="Duration" id="i_duration" />
+                    <input placeholder="Location" id="i_location" />
+                    <button class="btn btn--secondary" type="submit">Create</button>
+                </form>
+            </section>
+            <section class="card glass">
+                <h3>Internships</h3>
+                <ul id="internships"></ul>
+            </section>
+        </div>
+    </main>
+    <script>
+        // Mock API (Replace with your actual API)
+        const CompaniesAPI = {
+            _internships: [{
+                title: 'Software Engineer Intern'
+            }, {
+                title: 'Data Science Intern'
+            }],
+            _companyProfile: {},
+            listInternships: async () => {
+                return new Promise(resolve => {
+                    setTimeout(() => resolve(CompaniesAPI._internships), 200);
+                });
+            },
+            upsertProfile: async (data) => {
+                return new Promise(resolve => {
+                    setTimeout(() => {
+                        CompaniesAPI._companyProfile = data;
+                        resolve();
+                    }, 200);
+                });
+            },
+            createInternship: async (data) => {
+                return new Promise(resolve => {
+                    setTimeout(() => {
+                        CompaniesAPI._internships.push(data);
+                        resolve();
+                    }, 200);
+                });
+            }
+        };
+
+        const list = async () => {
+            const data = await CompaniesAPI.listInternships();
+            document.getElementById('internships').innerHTML = data.map(d => `<li>${d.title}</li>`).join('');
+        };
+
+        document.getElementById('companyForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const companyData = {
+                name: c_name.value,
+                website: c_website.value,
+                industry: c_industry.value,
+                location: c_location.value,
+                description: c_description.value
+            };
+            await CompaniesAPI.upsertProfile(companyData);
+            alert('Company profile saved!');
+        });
+
+        document.getElementById('internshipForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const internshipData = {
+                title: i_title.value,
+                description: i_description.value,
+                requirements: i_requirements.value,
+                stipend: i_stipend.value,
+                duration: i_duration.value,
+                location: i_location.value
+            };
+            await CompaniesAPI.createInternship(internshipData);
+            await list();
+            alert('Internship posted successfully!');
+        });
+
+        list();
+    </script>
+</body>
+
+</html>

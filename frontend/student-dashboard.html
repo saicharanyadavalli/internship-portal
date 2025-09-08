@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Student Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* CSS Styles */
+    :root {
+      --primary-color: #007bff;
+      --secondary-color: #6c757d;
+      --success-color: #28a745;
+      --danger-color: #dc3545;
+      --light-color: #f8f9fa;
+      --dark-color: #343a40;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f4f4f4;
+      color: var(--dark-color);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background-color: rgba(255, 255, 255, 0.8);
+      /* Glass effect */
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease-in-out;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      /* Glass border */
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card h3 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      color: var(--primary-color);
+      text-align: center;
+    }
+
+    input[type="text"],
+    input[type="file"],
+    textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      resize: vertical;
+      height: 100px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: 600;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      border: none;
+    }
+
+    .btn--primary {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .btn--primary:hover {
+      background-color: #0056b3;
+    }
+
+    .btn--secondary {
+      background-color: var(--secondary-color);
+      color: white;
+    }
+
+    .btn--secondary:hover {
+      background-color: #545b62;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    ul li {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    ul li:last-child {
+      border-bottom: none;
+    }
+
+    #uploadBtn {
+      margin-top: 10px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .container {
+        width: 95%;
+      }
+    }
+
+    /* Improved Glass Effect */
+    .glass {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    /* Hover effect for better visibility */
+    .glass:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Style for apply button */
+    .apply {
+      background-color: var(--success-color);
+      color: white;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .apply:hover {
+      background-color: #218838;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container" style="padding:32px 0">
+    <div class="grid grid-3">
+      <section class="card glass">
+        <h3>Profile</h3>
+        <form id="studentForm">
+          <input placeholder="First name" id="s_first" />
+          <input placeholder="Last name" id="s_last" />
+          <input placeholder="Education" id="s_edu" />
+          <input placeholder="Phone" id="s_phone" />
+          <textarea placeholder="Skills" id="s_skills"></textarea>
+          <button class="btn btn--primary" type="submit">Save</button>
+        </form>
+        <div style="margin-top:12px">
+          <input type="file" id="resume" />
+          <button class="btn" id="uploadBtn">Upload Resume</button>
+        </div>
+      </section>
+      <section class="card glass">
+        <h3>Browse Internships</h3>
+        <input placeholder="Search" id="search" />
+        <ul id="internships"></ul>
+      </section>
+      <section class="card glass">
+        <h3>My Applications</h3>
+        <ul id="apps"></ul>
+      </section>
+    </div>
+  </main>
+  <script type="module">
+    import {
+      CompaniesAPI,
+      StudentsAPI
+    } from '/js/api.js';
+
+    const listInternships = async () => {
+      const q = search.value.toLowerCase();
+      const data = (await CompaniesAPI.listInternships()).filter(i => i.title.toLowerCase().includes(q));
+      internships.innerHTML = data.map(d => `<li>${d.title} <button data-id="${d.id}" class="apply btn btn--secondary">Apply</button></li>`).join('');
+    };
+    search.addEventListener('input', listInternships);
+    internships.addEventListener('click', async (e) => {
+      if (e.target.matches('.apply')) {
+        await StudentsAPI.apply({
+          internship_id: Number(e.target.getAttribute('data-id'))
+        });
+        await listApps();
+      }
+    });
+    document.getElementById('studentForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      await StudentsAPI.upsertProfile({
+        first_name: s_first.value,
+        last_name: s_last.value,
+        education: s_edu.value,
+        skills: s_skills.value,
+        phone: s_phone.value
+      });
+      alert('Saved');
+    });
+    document.getElementById('uploadBtn').addEventListener('click', async () => {
+      const f = resume.files[0];
+      if (!f) return alert('Select a file');
+      const fd = new FormData();
+      fd.append('file', f);
+      const t = localStorage.getItem('token');
+      const res = await fetch('/api/students/resume', {
+        method: 'POST',
+        body: fd,
+        headers: {
+          Authorization: `Bearer ${t}`
+        }
+      });
+      if (!res.ok) return alert('Upload failed');
+      alert('Uploaded');
+    });
+    const listApps = async () => {
+      const data = await StudentsAPI.myApplications();
+      apps.innerHTML = data.map(a => `<li>#${a.id} - ${a.status}</li>`).join('');
+    };
+    await listInternships();
+    await listApps();
+  </script>
+</body>
+
+</html>
+
+
