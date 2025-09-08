@@ -56,7 +56,7 @@ async def list_internships(session: Annotated[AsyncSession, Depends(get_session)
     result = await session.execute(select(Internship))
     return list(result.scalars())
 
-@router.get("/applicants", response_model=List[schemas.ApplicantOut])
+@router.get("/applicants", response_model=List[schemas.ApplicationOut])
 async def get_all_applicants(
     session: Annotated[AsyncSession, Depends(get_session)],
     current_user: Annotated[User, Depends(require_role("company"))]

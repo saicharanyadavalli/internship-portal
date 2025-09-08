@@ -8,7 +8,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .. import schemas
-from ..auth import create_access_token, hash_password, verify_password
+from ..auth import create_access_token, hash_password, verify_password, get_current_user
 from ..database import get_session
 from ..models import User
 
@@ -40,6 +40,6 @@ async def login(
 
 
 @router.get("/me", response_model=schemas.UserOut)
-async def me(current_user: Annotated[User, Depends(...)]=None): 
+async def me(current_user: Annotated[User, Depends(get_current_user)]=None): 
     return current_user
 

@@ -6,7 +6,7 @@ from typing import Optional
 from pydantic import BaseModel, EmailStr, Field
 
 from pydantic import BaseModel, EmailStr, field_validator
-from utils import validate_password_strength
+from .utils import validate_password_strength
 
 class UserCreate(BaseModel):
     email: EmailStr
@@ -58,6 +58,10 @@ class StudentCreate(BaseModel):
     skills: Optional[str] = None
     resume_url: Optional[str] = None
     phone: Optional[str] = None
+
+
+class StudentUpdate(StudentCreate):
+    pass
 
 
 class StudentOut(StudentCreate):

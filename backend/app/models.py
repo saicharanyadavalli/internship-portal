@@ -1,12 +1,17 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List, ForwardRef
 
 from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .database import Base
+
+Student = ForwardRef("Student")
+Company = ForwardRef("Company")
+Internship = ForwardRef("Internship")
+Application = ForwardRef("Application")
 
 
 class User(Base):
