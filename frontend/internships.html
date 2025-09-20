@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Internship Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/internships.css?v=1">
+</head>
+<body>
+  <div class="flex flex-col min-h-screen">
+    <header>
+      <div class="header-container">
+        <h1>Internship Portal</h1>
+        <nav class="nav-links">
+          <a href="studentdashboard.html">Dashboard</a>
+          <a href="sapplication.html">My Applications</a>
+          <a href="internships.html" class="active">Internships</a>
+        </nav>
+        <div class="actions">
+          <button>
+            <span class="material-symbols-outlined">notifications</span>
+          </button>
+          <div class="avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBUSb0i1Be6uOBx9UUIfZ15_qzYG2to5WlOBJ06W5IWcstT6WpkAhRitM0F1df5w_W_ZSBFBull_uRcsmA14qXPuowwmOK-m8ek6Ex42sCgoI1OQU_YuSRnyxdBf-1wmwY3AUfkdmNMLUmw-AYaHvijg12I0sf8qB97QbeuJxE4J6dvFy8YLMpI8xc98kYIRQqvAoDwyxdSi3QQic5T4r8LMzdZWGdOUo76qYYV6zTIzwRYWH-QYWHz1MLnxT5knJhEm2YjA1EPbw3s');"></div>
+          <button>
+            <span class="material-symbols-outlined">menu</span>
+          </button>
+        </div>
+      </div>
+    </header>
+    <main>
+      <h1>Available Internships</h1>
+      <div id="internship-list" class="internship-container">
+        <!-- Internships will load here -->
+      </div>
+    </main>
+  </div>
+  <script src="js/internships.js"></script>
+</body>
+</html>

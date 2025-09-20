@@ -5,7 +5,7 @@ from .app.database import Base, engine, get_session, create_database
 
 import os
 from contextlib import asynccontextmanager
-
+from dotenv import load_dotenv
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -18,6 +18,7 @@ from .app.routers import auth as auth_router
 from .app.routers import companies as companies_router
 from .app.routers import students as students_router
 
+load_dotenv()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

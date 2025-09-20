@@ -12,12 +12,20 @@ class UserCreate(BaseModel):
     email: EmailStr
     password: str = Field(min_length=8)
     role: str = Field(pattern="^(student|company)$")
+    recaptcha: str | None = None  
 
     @field_validator("password")
     @classmethod
     def strong_password(cls, v: str) -> str:
         return validate_password_strength(v)
 
+class UserBase(BaseModel):
+    id: int
+    email: EmailStr
+    role: str
+
+    class Config:
+        from_attributes = True
 
 class Token(BaseModel):
     access_token: str
@@ -25,10 +33,9 @@ class Token(BaseModel):
 
 
 class UserOut(BaseModel):
-    id: int
-    email: EmailStr
-    role: str
-    created_at: datetime
+    access_token: str
+    token_type: str = "bearer"
+    user: UserBase
 
     class Config:
         from_attributes = True
@@ -66,6 +73,7 @@ class StudentUpdate(StudentCreate):
 
 class StudentOut(StudentCreate):
     id: int
+    first_name: str
     user_id: int
 
     class Config:
@@ -86,6 +94,7 @@ class InternshipCreate(BaseModel):
 class InternshipOut(InternshipCreate):
     id: int
     company_id: int
+    company: CompanyCreate
 
     class Config:
         from_attributes = True
@@ -106,4 +115,3 @@ class ApplicationOut(BaseModel):
 
     class Config:
         from_attributes = True
-

@@ -1,0 +1,200 @@
+/* Reset & base styles */
+:root {
+  --brand-deep-navy: #1A237E;
+  --background-light-gray: #F5F6FA;
+  --text-dark-gray: #212121;
+}
+
+body {
+  margin: 0;
+  font-family: 'Manrope', sans-serif;
+  background-color: #F5F6FA;
+  color: #212121;
+}
+a { text-decoration: none; }
+button { cursor: pointer; }
+
+/* Header */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(5px);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+header h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--brand-deep-navy);
+  margin: 0;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+}
+
+.nav-links a {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: gray;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.nav-links a:hover {
+  color: var(--brand-deep-navy);
+}
+
+.nav-links a.active {
+  color: var(--brand-deep-navy);
+  font-weight: 600;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.actions button {
+  padding: 0.5rem;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: gray;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.actions button:hover {
+  background: #f2f2f2;
+  color: var(--brand-deep-navy);
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+}
+
+/* Topbar (shared with internships) */
+:root{
+  --topbar-bg: rgba(255,255,255,0.85);
+  --topbar-border: rgba(0,0,0,0.06);
+  --brand: #1A237E;
+  --ink: #222;
+  --muted: #6b7280;
+  --accent: #6a0dad;
+}
+
+.topbar{
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: var(--topbar-bg);
+  backdrop-filter: saturate(180%) blur(8px);
+  border-bottom: 1px solid var(--topbar-border);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.topbar__container{
+  max-width: 1200px;
+  height: 64px;
+  margin: 0 auto;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.topbar__brand{
+  color: var(--brand);
+  font-weight: 800;
+  text-decoration: none;
+  font-size: 1.125rem;
+  letter-spacing: 0.2px;
+}
+
+.topbar__nav{ display:flex; gap:16px; }
+.topbar__nav a{
+  color: var(--muted);
+  text-decoration: none;
+  padding: 8px 10px;
+  border-radius: 8px;
+  transition: color .2s, background .2s;
+}
+.topbar__nav a:hover{ color: var(--ink); background: rgba(106,13,173,0.06); }
+.topbar__nav a:is(.active){ color: var(--accent); background: rgba(106,13,173,0.12); }
+
+.topbar__actions{ display:flex; align-items:center; gap:10px; }
+.icon-btn{
+  height: 36px; width: 36px; display:grid; place-items:center;
+  border: 1px solid var(--topbar-border); background:#fff; border-radius:10px; cursor:pointer;
+  transition: background .2s, transform .08s;
+}
+.icon-btn:hover{ background:#fafafa; }
+.icon-btn:active{ transform: translateY(1px); }
+.avatar{ height:36px; width:36px; border-radius:50%; background:linear-gradient(135deg,#8b5cf6,#ec4899); }
+@media (max-width: 720px){ .topbar__container{ height:56px; } .topbar__nav{ display:none; } }
+
+/* Container */
+.container { max-width: 1200px; margin: auto; padding: 1rem; }
+
+/* Main heading */
+main h2 { font-size: 2rem; font-weight: bold; color: #131d86; }
+main p { color: #6B7280; margin: 0.25rem 0 1rem; }
+
+/* Internship cards */
+.grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(300px,1fr)); gap: 1rem; }
+.internship-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
+  border-left: 4px solid #3B82F6;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.internship-card img { width: 50px; height: 50px; object-fit: contain; border-radius: 6px; }
+.internship-card h3 { margin: 0; font-size: 1.125rem; font-weight: 600; color: #131d86; }
+.internship-card p { margin: 0; font-size: 0.875rem; color: #212121; }
+.internship-card .requirements { font-size: 0.875rem; color: #6B7280; }
+.internship-card button { 
+  margin-top: 0.5rem; 
+  padding: 0.5rem 1rem; 
+  border: none; 
+  border-radius: 9999px; 
+  background-color: #131d86; 
+  color: #fff; 
+  font-size: 0.875rem; 
+}
+.internship-card button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* Status badge */
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+.status-open { background-color: #3B82F620; color: #3B82F6; }
+.status-closed { background-color: #EF444420; color: #EF4444; }
+.status-applied { background-color: #3B82F620; color: #3B82F6; }

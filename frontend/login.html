@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Login - Internship Portal</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="stylesheet" href="css/login.css" />
 </head>
 <body>
   <main class="container" style="padding:48px 0">
@@ -14,10 +14,17 @@
       <form id="loginForm">
         <label>Email<input type="email" id="email" required /></label>
         <label>Password<input type="password" id="password" required minlength="8" /></label>
+        <div class="form-group recaptcha">
+          <div class="g-recaptcha" data-sitekey="6LfLecwrAAAAAGzkqNpQJnjShKsvz993dX6Pbbyb"></div>
+        </div>
         <button class="btn btn--primary" type="submit">Login</button>
       </form>
+
       <div id="msg" style="color:var(--danger);margin-top:8px"></div>
     </div>
+    <p style="text-align:center;margin-top:16px;color:#1a237e;">
+      Don't have an account? <a href="signup.html" style="color:#1a237e;font-weight:600;">Create one</a>
+    </p>
   </main>
   <script type="module">
     import {AuthAPI} from '/js/api.js';
@@ -27,10 +34,13 @@
       e.preventDefault(); msg.textContent='';
       try{
         await AuthAPI.login(document.getElementById('email').value, document.getElementById('password').value);
-        location.href='/student-dashboard.html';
+        location.href='/dashboard.html';
       }catch(err){ msg.textContent=err.message; }
     });
   </script>
+  <script src="js/login.js"></script>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
 </body>
 </html>
 

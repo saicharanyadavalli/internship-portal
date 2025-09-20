@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signup - Internship Portal</title>
+  <link rel="stylesheet" href="css/signup.css">
+</head>
+<body>
+  <div class="signup-container">
+    <h1>Create Your Account</h1>
+    <form id="signupForm">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+      <div class="form-group">
+        <label for="role">Sign up as</label>
+        <select id="role" name="role" required>
+          <option value="">-- Select --</option>
+          <option value="student">Student</option>
+          <option value="company">Company</option>
+        </select>
+      </div>
+      <div class="form-group recaptcha">
+        <div class="g-recaptcha" data-sitekey="6LfLecwrAAAAAGzkqNpQJnjShKsvz993dX6Pbbyb"></div>
+      </div>
+      <button type="submit" class="submit-btn">Sign Up</button>
+    </form>
+    <div id="msg" style="color:var(--danger);margin-top:8px"></div>
+    <p class="login-link">Already have an account? <a href="login.html">Login here</a></p>
+  </div>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <script src="signup.js"></script>
+</body>
+</html>

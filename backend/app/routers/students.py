@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Annotated, List
 
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile,Form
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -16,15 +16,28 @@ router = APIRouter(prefix="/students", tags=["students"])
 
 @router.post("/addprofile", response_model=schemas.StudentOut)
 async def upsert_student_profile(
-    data: schemas.StudentCreate,
+    first_name: str = Form(None),
+    last_name: str = Form(None),
+    education: str = Form(None),
+    skills: str = Form(None),
+    phone: str = Form(None),
     file: UploadFile | None = File(None),
     session: Annotated[AsyncSession, Depends(get_session)] = None,
     current_user: Annotated[User, Depends(require_role("student"))] = None,
 ):
-    result = await session.execute(select(Student).where(Student.user_id == current_user.id))
+    result = await session.execute(
+        select(Student).where(Student.user_id == current_user.id)
+    )
     student = result.scalar_one_or_none()
 
-    # If resume file is uploaded, send to Cloudinary and get URL
+    data = schemas.StudentCreate(
+        first_name=first_name,
+        last_name=last_name,
+        education=education,
+        skills=skills,
+        phone=phone,
+    )
+
     resume_url = None
     if file:
         content = await file.read()
@@ -102,11 +115,24 @@ async def apply_to_internship(
     if internship is None:
         raise HTTPException(status_code=404, detail="Internship not found")
 
-    result = await session.execute(select(Student).where(Student.user_id == current_user.id))
+    result = await session.execute(
+        select(Student).where(Student.user_id == current_user.id)
+    )
     student = result.scalar_one_or_none()
     if not student:
         raise HTTPException(status_code=400, detail="Create student profile first")
 
+    # ✅ Check if duplicate application already exists
+    existing = await session.execute(
+        select(Application).where(
+            Application.student_id == student.id,
+            Application.internship_id == internship.id
+        )
+    )
+    if existing.scalar_one_or_none():
+        raise HTTPException(status_code=400, detail="You have already applied to this internship")
+
+    # If no duplicate → create new application
     application = Application(
         student_id=student.id,
         internship_id=internship.id,
@@ -116,7 +142,6 @@ async def apply_to_internship(
     await session.commit()
     await session.refresh(application)
     return application
-
 
 
 @router.get("/applications", response_model=List[schemas.ApplicationOut])

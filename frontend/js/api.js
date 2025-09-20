@@ -12,6 +12,14 @@ async function api(path,{method="GET",body,auth=false,headers={}}={}){
     if(t) opts.headers["Authorization"]=`Bearer ${t}`;
   }
   const res=await fetch(`${API_BASE}${path}`,opts);
+  if(res.status===401){
+    localStorage.removeItem("token");
+    // Redirect to login if unauthorized
+    if(!location.pathname.endsWith("login.html")){
+      location.href="login.html";
+    }
+    throw new Error("Unauthorized");
+  }
   if(!res.ok){
     const err=await res.json().catch(()=>({detail:"Request failed"}));
     throw new Error(err.detail||"Request failed");
@@ -29,7 +37,8 @@ export const AuthAPI={
     localStorage.setItem("token",data.access_token);
     return data;
   },
-  me: ()=>api("/auth/me",{auth:true})
+  me: ()=>api("/auth/me",{auth:true}),
+  logout: ()=>{ localStorage.removeItem("token"); }
 };
 
 export const CompaniesAPI={

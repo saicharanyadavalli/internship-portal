@@ -10,23 +10,40 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from .. import schemas
 from ..auth import create_access_token, hash_password, verify_password, get_current_user
 from ..database import get_session
+from ..utils import verify_recaptcha
 from ..models import User
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/register", response_model=schemas.UserOut)
-async def register(user_in: schemas.UserCreate, session: Annotated[AsyncSession, Depends(get_session)]):
+async def register(
+    user_in: schemas.UserCreate,
+    session: Annotated[AsyncSession, Depends(get_session)]
+):
+    await verify_recaptcha(user_in.recaptcha)
+
     existing = await session.execute(select(User).where(User.email == user_in.email))
     if existing.scalar_one_or_none():
         raise HTTPException(status_code=400, detail="Email already registered")
-    user = User(email=user_in.email, password_hash=hash_password(user_in.password), role=user_in.role)
+
+    user = User(
+        email=user_in.email,
+        password_hash=hash_password(user_in.password),
+        role=user_in.role
+    )
+    token = create_access_token(subject=user.email, role=user.role)
     session.add(user)
     await session.commit()
     await session.refresh(user)
-    return user
+    return {
+    "access_token": token,
+    "token_type": "bearer",
+    "user": user
+    }
 
 
-@router.post("/login", response_model=schemas.Token)
+
+@router.post("/login", response_model=schemas.UserOut)
 async def login(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     session: Annotated[AsyncSession, Depends(get_session)],
@@ -36,7 +53,11 @@ async def login(
     if not user or not verify_password(form_data.password, user.password_hash):
         raise HTTPException(status_code=400, detail="Incorrect email or password")
     token = create_access_token(subject=user.email, role=user.role)
-    return {"access_token": token, "token_type": "bearer"}
+    return {
+    "access_token": token,
+    "token_type": "bearer",
+    "user": user
+    }
 
 
 @router.get("/me", response_model=schemas.UserOut)
